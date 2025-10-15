@@ -11,14 +11,14 @@ void jeet_loop(void)
         printf("type_nigga > ");
         
         line = read_jeet_line();
-        args = split_jeet_line(line);
-        status = jeet_excute(args);
+        args = jeet_split_line(line);
+        status = jeet_execute(args);
 
 
-        free(line)
-        free(args) // never foget to free the memeotry 
+        free(line);
+        free(args); // never foget to free the memeotry 
 
-    } while(status)
+    } while(status);
 }
 
 
@@ -84,9 +84,10 @@ char **jeet_split_line(char *line){
     int buffersize = JEET_TOK_BUFFER;
     int postion = 0;
 
-    char **tokens = malloc(sizeof(char) * buffersize);
+    char **tokens = malloc(sizeof(char *) * buffersize);
     char *token;
-    if(!token){
+
+    if(!tokens){
         fprintf(stderr, "jeet says : Allocation error\n");
         exit(EXIT_FAILURE);
     }
@@ -99,15 +100,16 @@ char **jeet_split_line(char *line){
         if(postion >= buffersize)
         {
             buffersize += JEET_TOK_BUFFER;
-            tokens = realloc(tokens, buffersize*sizeof(char));
+            tokens = realloc(tokens, buffersize*sizeof(char *));
 
-            if(!token){
+            if(!tokens){
                 fprintf(stderr , "jeet says Allocation error\n");
                 exit(EXIT_FAILURE);
             }
         }
 
-        token = strtok(NULL , JEET_TOK_DELIM);   // contuning from where it left off 
+        token = strtok(NULL , JEET_TOK_DELIM);   // contuning from where it left off
+
     }
 
     tokens[postion] = NULL;
@@ -118,11 +120,11 @@ char **jeet_split_line(char *line){
 
 int jeet_launch(char **args){
     pid_t pid , wpid; // if pid = 0 its running child process , if pid > 0 then parrent else error 
-    int status 
+    int status;
 
     pid = fork();
     if(pid == 0){   //child process 
-        if(execvp(args[0]) , args) == -1 ){
+        if (execvp(args[0], args) == -1){
             perror("Nigga");
         }
         exit(EXIT_FAILURE);
@@ -142,31 +144,35 @@ int jeet_launch(char **args){
 
 // making bultin functions
 
-char *bultin_str[] = {
+int jeet_cd(char **args);
+int jeet_help(char **args);
+int jeet_exit(char **args);
+
+char *builtin_str[] = {
     "cd", "help" , "exit"
 };
 
-int (*builtin_func[])(char **){
+int (*builtin_func[])(char **) = {
     &jeet_cd,
     &jeet_help,
     &jeet_exit
-
 };
 
+
 int jeet_num_builtin(){
-    return (sizeof(bultin_str) / sizeof(char *));
+    return (sizeof(builtin_func) / sizeof(char *));
 }
 
 
 // now implementing the builting func cd help and exit 
 
 int jeet_cd(char **args){
-    if(args[0] == NULL){
-        fprintf(stderr , "Nigga what ? type proper path");
+    if(args[1] == NULL){
+        fprintf(stderr , "Nigga what ? type proper path\n");
     }
     else { // here we will call chdir() a system call in child process
         if(chdir(args[1]) != 0){
-            perror("nigga");
+            perror("nigga\n");
         }
     }
 
@@ -174,7 +180,7 @@ int jeet_cd(char **args){
 }
 
 int jeet_help(char **args) {
-    int n = jeet_num_builtin;
+    int n = jeet_num_builtin();
     printf(
         "    ____. _________ ___ ______________.____    .____     \n"
         "   |    |/   _____//   |   \\_   _____/|    |   |    |    \n"
@@ -200,15 +206,15 @@ int jeet_exit(char **args){
         return 0;
 }
 
-int jeet_excute(char **args){
-    if(args[0]= NULL){
-        fprintf(stderr , "Bro what ?? why empty coomand? why ??? ")
+int jeet_execute(char **args){
+    if(args[0] == NULL){
+        fprintf(stderr , "Bro what ?? why empty coomand? why ??? \n ");
         return 1;
     
     }
 
     for( int i = 0; i < jeet_num_builtin() ; i++){
-       if(strcmp(args[0] , bultin_str[i]) == 0){
+       if(strcmp(args[0] , builtin_str[i]) == 0){
             return (*builtin_func[i])(args);
         }
     }
