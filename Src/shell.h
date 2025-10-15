@@ -16,6 +16,9 @@ char *read_jeet_line(void)
 char **split_jeet_line(char* line)
 int jeet_launch(char **args)
 
-
-
+//builtin functions 
+int jeet_cd(char **args)
+int jeet_exit(char **args)
+int jeet_help(char **args)
+    
 #endif 

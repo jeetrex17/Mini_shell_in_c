@@ -114,3 +114,50 @@ char **jeet_split_line(char *line){
 
     return tokens;
 }
+
+
+int jeet_launch(char **args){
+    pid_t pid , wpid; // if pid = 0 its running child process , if pid > 0 then parrent else error 
+    int status 
+
+    pid = fork();
+    if(pid == 0){   //child process 
+        if(execvp(args[0]) , args) == -1 ){
+            perror("Nigga");
+        }
+        exit(EXIT_FAILURE);
+    }
+    else if(pid < 0){
+        // error while forking
+        perror("Nigga");
+    }
+    else{
+        do {
+            wpid = waitpid(pid , &status, WUNTRACED);
+        } while(!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+
+    return 1;
+}
+
+// making bultin functions
+
+char *bultin_str[] = {
+    "cd", "help" , "exit"
+};
+
+int (*builtin_func[])(char **){
+    &jeet_cd,
+    &jeet_help,
+    &jeet_exit
+
+};
+
+int jeet_num_builtin(){
+    return (sizeof(bultin_str) / sizeof(char *));
+}
+
+
+// now implementing the builting func cd help and exit 
+
+
