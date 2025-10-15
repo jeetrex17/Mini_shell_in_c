@@ -20,5 +20,7 @@ int jeet_launch(char **args)
 int jeet_cd(char **args)
 int jeet_exit(char **args)
 int jeet_help(char **args)
+
+int jeet_execute(char **args)
     
 #endif 

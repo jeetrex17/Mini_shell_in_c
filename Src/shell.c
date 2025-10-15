@@ -160,4 +160,58 @@ int jeet_num_builtin(){
 
 // now implementing the builting func cd help and exit 
 
+int jeet_cd(char **args){
+    if(args[0] == NULL){
+        fprintf(stderr , "Nigga what ? type proper path");
+    }
+    else { // here we will call chdir() a system call in child process
+        if(chdir(args[1]) != 0){
+            perror("nigga");
+        }
+    }
 
+    return 1;
+}
+
+int jeet_help(char **args) {
+    int n = jeet_num_builtin;
+    printf(
+        "    ____. _________ ___ ______________.____    .____     \n"
+        "   |    |/   _____//   |   \\_   _____/|    |   |    |    \n"
+        "   |    |\\_____  \\/    ~    \\    __)_ |    |   |    |    \n"
+        " /\\__|    |/        \\    Y    /        \\|    |___|    |___ \n"
+        " \\________/_______  /\\___|_  /_______  /|_______ \\_______ \\\n"
+        "                  \\/       \\/        \\/         \\/       \\/\n"
+        "\n"
+        "          Slaves at your service\n"
+        "------------------------------------------------------\n"
+        "Built-ins: %d\n"
+        "  cd    : change directory\n"
+        "  help  : show this message\n"
+        "  exit  : exit the shell\n"
+        "\n",
+        n
+    );
+
+    return 1;
+}
+
+int jeet_exit(char **args){
+        return 0;
+}
+
+int jeet_excute(char **args){
+    if(args[0]= NULL){
+        fprintf(stderr , "Bro what ?? why empty coomand? why ??? ")
+        return 1;
+    
+    }
+
+    for( int i = 0; i < jeet_num_builtin() ; i++){
+       if(strcmp(args[0] , bultin_str[i]) == 0){
+            return (*builtin_func[i])(args);
+        }
+    }
+
+    return jeet_launch(args);
+}
