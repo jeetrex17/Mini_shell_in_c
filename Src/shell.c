@@ -168,7 +168,11 @@ int jeet_num_builtin(){
 
 int jeet_cd(char **args){
     if(args[1] == NULL){
-        fprintf(stderr , "Nigga what ? type proper path\n");
+        fprintf(stderr , "Nigga taking you back to jail\n");
+
+        if(chdir(getenv("HOME")) != 0){
+            perror("Nigga");
+        }
     }
     else { // here we will call chdir() a system call in child process
         if(chdir(args[1]) != 0){
@@ -203,7 +207,8 @@ int jeet_help(char **args) {
 }
 
 int jeet_exit(char **args){
-        return 0;
+    printf("Bye nigga dont shot and steal\n");
+    return 0;
 }
 
 int jeet_execute(char **args){
