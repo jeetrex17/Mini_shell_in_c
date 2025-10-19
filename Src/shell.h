@@ -9,7 +9,7 @@
 
 //constants 
 #define  JEET_RL_BUFFER 1024  // rl = readline 
-#define JEET_TOK_BUFFER 6
+#define JEET_TOK_BUFFER 64
 #define JEET_TOK_DELIM " \t\r\a\n"
 
 //functions decalations 
