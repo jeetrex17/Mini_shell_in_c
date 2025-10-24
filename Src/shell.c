@@ -131,7 +131,7 @@ char **jeet_split_line(char *line){
 
             }else
             {
-                printf("Where the hell is the output file name nigga ? u are NGMI?");
+                printf("Where the hell is the output file name nigga ? u are NGMI?\n");
             }
         }
         else if(strcmp(tokens[i], "<") == 0)
@@ -143,7 +143,7 @@ char **jeet_split_line(char *line){
 
             }else
             {
-                printf("Where the hell is the input file nigga ? are u retarded?");
+                printf("Where the hell is the input file nigga ? are u retarded?\n");
             }
         }
     }
@@ -235,7 +235,7 @@ int jeet_cd(char **args){
     }
     else { // here we will call chdir() a system call in child process
         if(chdir(args[1]) != 0){
-            perror("nigga\n");
+            perror("nigga");
         }
     }
 
