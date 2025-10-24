@@ -1,6 +1,11 @@
 #include "shell.h"
 #include <string.h>
 
+
+char *g_input_file = NULL;
+char *g_output_file = NULL;
+
+
 void jeet_loop(void)
 {
     int status ;
@@ -17,8 +22,11 @@ void jeet_loop(void)
 
         free(line);
         free(args); // never foget to free the memeotry 
+        
+        g_input_file = NULL;
+        g_output_file = NULL;
 
-    } while(status);
+    } while(status);    
 }
 
 
@@ -78,7 +86,7 @@ char *read_jeet_line(void)
 //     }
 //     return line;
 // }
-
+//
 
 char **jeet_split_line(char *line){
     int buffersize = JEET_TOK_BUFFER;
@@ -107,12 +115,41 @@ char **jeet_split_line(char *line){
                 exit(EXIT_FAILURE);
             }
         }
-
         token = strtok(NULL , JEET_TOK_DELIM);   // contuning from where it left off
 
     }
-
+    
     tokens[postion] = NULL;
+    for(int i = 0 ; tokens[i] != NULL ; i++)
+    {
+        if(strcmp(tokens[i], ">") == 0)
+        {
+            if(tokens[i+1] != NULL)
+            {
+                g_output_file = tokens[i+1];
+                tokens[i] = NULL;
+
+            }else
+            {
+                printf("Where the hell is the output file name nigga ? u are NGMI?");
+            }
+        }
+        else if(strcmp(tokens[i], "<") == 0)
+        {
+            if(tokens[i+1] != NULL)
+            {
+                g_input_file = tokens[i+1];
+                tokens[i] = NULL;
+
+            }else
+            {
+                printf("Where the hell is the input file nigga ? are u retarded?");
+            }
+        }
+    }
+
+
+   // tokens[postion] = NULL;
 
     return tokens;
 }
@@ -123,7 +160,29 @@ int jeet_launch(char **args){
     int status;
 
     pid = fork();
-    if(pid == 0){   //child process 
+    if(pid == 0){   //child process
+        if(g_output_file != NULL)
+        {
+            int out_fd = open(g_output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (out_fd == -1) { 
+                perror("nigga: open output"); 
+                exit(EXIT_FAILURE); 
+            }
+            dup2(out_fd , 1);
+            close(out_fd);
+        }
+        if(g_input_file != NULL)
+        {
+            int in_fd = open(g_input_file, O_RDONLY);
+
+            if (in_fd == -1) {
+                perror("jeet: open input");
+                exit(EXIT_FAILURE);
+            }
+
+            dup2(in_fd , 0);
+            close(in_fd);
+        }
         if (execvp(args[0], args) == -1){
             perror("Nigga");
         }

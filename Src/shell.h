@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <unistd.h>     // For fork(), chdir(), execvp()
 #include <sys/wait.h>   // For waitpid()
+#include <fcntl.h>   // for open()
+#include <string.h>
 
 //constants 
 #define  JEET_RL_BUFFER 1024  // rl = readline 
