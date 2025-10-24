@@ -6,7 +6,7 @@
 *.exe
 *.out
 jeetsh
-
+jshell
 
 build/
 bin/

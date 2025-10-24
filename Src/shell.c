@@ -4,6 +4,7 @@
 
 char *g_input_file = NULL;
 char *g_output_file = NULL;
+bool append_mode = false;
 
 
 void jeet_loop(void)
@@ -25,6 +26,7 @@ void jeet_loop(void)
         
         g_input_file = NULL;
         g_output_file = NULL;
+        append_mode = false;
 
     } while(status);    
 }
@@ -122,17 +124,34 @@ char **jeet_split_line(char *line){
     tokens[postion] = NULL;
     for(int i = 0 ; tokens[i] != NULL ; i++)
     {
-        if(strcmp(tokens[i], ">") == 0)
+        if(strcmp(tokens[i], ">>") == 0)
         {
             if(tokens[i+1] != NULL)
             {
                 g_output_file = tokens[i+1];
+                append_mode = true;
+                tokens[i] = NULL;
+            }
+            else
+            {
+                //perror("broo what are u even trying to appent ? an gost ?");
+                fprintf(stderr , "nigga what are u even trying to apped ? a ghost\n");
+            }
+            break;
+        }
+        else if(strcmp(tokens[i], ">") == 0)
+        {
+            if(tokens[i+1] != NULL)
+            {
+                g_output_file = tokens[i+1];
+                append_mode = false;
                 tokens[i] = NULL;
 
             }else
             {
-                printf("Where the hell is the output file name nigga ? u are NGMI?\n");
+                fprintf(stderr , "Where the hell is the output file name nigga ? u are NGMI?\n");
             }
+            break;
         }
         else if(strcmp(tokens[i], "<") == 0)
         {
@@ -143,8 +162,9 @@ char **jeet_split_line(char *line){
 
             }else
             {
-                printf("Where the hell is the input file nigga ? are u retarded?\n");
+                fprintf(stderr , "Where the hell is the input file nigga ? are u retarded?\n");
             }
+            break;
         }
     }
 
@@ -153,17 +173,22 @@ char **jeet_split_line(char *line){
 
     return tokens;
 }
-
+    
 
 int jeet_launch(char **args){
     pid_t pid , wpid; // if pid = 0 its running child process , if pid > 0 then parrent else error 
     int status;
+    int in_fd , out_fd;
 
     pid = fork();
     if(pid == 0){   //child process
         if(g_output_file != NULL)
         {
-            int out_fd = open(g_output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if(append_mode){
+                out_fd = open(g_output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            }else{
+                out_fd = open(g_output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644 );
+            }
             if (out_fd == -1) { 
                 perror("nigga: open output"); 
                 exit(EXIT_FAILURE); 
@@ -173,7 +198,7 @@ int jeet_launch(char **args){
         }
         if(g_input_file != NULL)
         {
-            int in_fd = open(g_input_file, O_RDONLY);
+            in_fd = open(g_input_file, O_RDONLY);
 
             if (in_fd == -1) {
                 perror("jeet: open input");

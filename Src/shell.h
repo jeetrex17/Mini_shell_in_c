@@ -8,6 +8,7 @@
 #include <sys/wait.h>   // For waitpid()
 #include <fcntl.h>   // for open()
 #include <string.h>
+#include <stdbool.h>
 
 //constants 
 #define  JEET_RL_BUFFER 1024  // rl = readline 
